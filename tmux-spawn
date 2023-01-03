@@ -1,0 +1,57 @@
+#!/bin/bash
+
+SESSION=`ip a s tun0 | grep inet | cut -d ' ' -f 6 | cut -d '/' -f 1 | cut -d $'\n' -f 1 | tr '.' '_'`
+
+function usage() {
+	echo "Usage: IP=<IP> MACHINE_NAME=<MACHINE_NAME> $0"
+	exit $1
+}
+
+source `dirname $0`/commands.sh
+
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+	usage 0
+fi
+
+if [[ "$MACHINE_NAME" == "" ]]; then
+	echo "No Machine Name has been supplied!"
+	usage 1
+fi
+if [[ "$IP" == "" ]]; then
+	echo "No IP has been provided!"
+	usage 1
+fi
+
+echo "Machine Name: $MACHINE_NAME"
+echo "IP          : $IP"
+
+## Firstly creating the directory:
+if [[ -d "$MACHINE_NAME" ]]; then
+	rm -rf "$MACHINE_NAME"
+fi
+
+mkdir "$MACHINE_NAME"
+cd "$MACHINE_NAME"
+
+## Creating folders for all the logs:
+mkdir www
+mkdir logs
+
+export IP="$IP"
+export MACHINE_NAME="$MACHINE_NAME"
+export SESSION="$SESSION"
+
+echo; read -p "Press Enter to initialize the TMUX Session"
+
+tmux start-server
+tmux new-session -d -s "$SESSION" -n "$MACHINE_NAME"
+tmux selectp -t 1
+tmux send-keys "echo 'IP: \`$IP\`' > README.md" C-m
+tmux send-keys "clear" C-m
+tmux send-keys "nmap -p- --min-rate=10000 -oN logs/initial.nmap $IP -Pn" C-m
+tmux splitw -h
+tmux selectp -t 2
+tmux new-window -t $SESSION:2 -n "www-python3"
+tmux send-keys "cd www; python3 -m http.server" C-m
+tmux select-window -t $SESSION:1
+tmux attach-session -t $SESSION
