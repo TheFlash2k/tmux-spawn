@@ -48,7 +48,7 @@ tmux new-session -d -s "$SESSION" -n "$MACHINE_NAME"
 tmux selectp -t 1
 tmux send-keys "echo 'IP: \`$IP\`' > README.md" C-m
 tmux send-keys "clear" C-m
-tmux send-keys "nmap -p- --min-rate=10000 -oN logs/initial.nmap $IP -Pn" C-m
+tmux send-keys "nmap -p- --min-rate=10000 -oN ./logs/initial.nmap $IP -Pn" C-m
 tmux splitw -h
 tmux selectp -t 2
 tmux new-window -t $SESSION:2 -n "www-python3"
