@@ -23,6 +23,7 @@ $ export gobuster_medium="gobuster dir -u $1 -w /usr/share/wordlists/dirbuster/d
 $ export nikto_full="nikto -h $1 | tee logs/nikto.log"
 $ export smbclient_list="smbclient -L \\\\$IP\\"
 $ export smbclient_connect="smbclient \\\\$IP\\$1"
+$ export add_host="echo $1 | sudo tee -a /etc/hosts"
 ```
 
 > ## Note:
