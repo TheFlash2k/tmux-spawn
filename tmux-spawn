@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SESSION=`ip a s tun0 | grep inet | cut -d ' ' -f 6 | cut -d '/' -f 1 | cut -d $'\n' -f 1 | tr '.' '_'`
-
 function usage() {
 	echo "Usage: IP=<IP> MACHINE_NAME=<MACHINE_NAME> $0"
 	exit $1
@@ -21,6 +19,8 @@ if [[ "$IP" == "" ]]; then
 	echo "No IP has been provided!"
 	usage 1
 fi
+
+SESSION="`ip a s tun0 | grep inet | cut -d ' ' -f 6 | cut -d '/' -f 1 | cut -d $'\n' -f 1 | tr '.' '_'`-$MACHINE_NAME"
 
 echo "Machine Name: $MACHINE_NAME"
 echo "IP          : $IP"
