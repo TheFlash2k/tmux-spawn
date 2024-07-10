@@ -43,6 +43,8 @@ export SESSION="$SESSION"
 
 echo; read -p "Press Enter to initialize the TMUX Session"
 
+source /opt/tmux-spawn/commands.sh
+
 tmux start-server
 tmux new-session -d -s "$SESSION" -n "$MACHINE_NAME"
 tmux selectp -t 1
